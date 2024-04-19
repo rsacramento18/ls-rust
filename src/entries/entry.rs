@@ -1,10 +1,24 @@
-struct Entry {
-    name: String,
-    icon: String,
-    size: usize,
-    group: String,
-    owner: String,
-    permissions: String,
+use std::{fmt::Display, fs::DirEntry};
+
+pub struct Entry {
+    pub name: String,
+    pub icon: String,
+    pub size: usize,
+    pub group: String,
+    pub owner: String,
+    pub permissions: String,
+}
+
+fn DirEntryToEntry(dirEntry: DirEntry) -> Entry{
+    return Entry {
+        name: dirEntry.file_name(),
+        icon: "folder",
+        size: "13",
+        group: "rsacramento",
+        owner: "rsacramento",
+        permissions: "1223"
+    }
+
 }
 
 impl Display for Entry {

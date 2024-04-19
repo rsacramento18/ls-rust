@@ -1,6 +1,11 @@
-use std::{env, path::{Path, PathBuf}};
+use std::{
+    env,
+    path::{Path, PathBuf},
+};
 
-fn get_path_string() -> PathBuf{
+mod entries;
+
+fn get_path_string() -> PathBuf {
     if let Some(arg) = env::args().nth(1) {
         let mut path = PathBuf::new();
         path.push(arg);
@@ -14,5 +19,11 @@ fn get_path_string() -> PathBuf{
 }
 
 fn main() {
+
+    let path = get_path_string();
+
+    path.read_dir().expect("Could not read directory");
+        .map(|entry| Entry)
+        .for_each(|entry| println!("{:?}", entry));
     println!("Hello, world!");
 }
