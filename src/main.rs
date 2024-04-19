@@ -1,7 +1,6 @@
-use std::{
-    env,
-    path::{Path, PathBuf},
-};
+use std::{env, path::PathBuf};
+
+use crate::entries::entry::dir_entry_to_entry;
 
 mod entries;
 
@@ -13,17 +12,17 @@ fn get_path_string() -> PathBuf {
     } else {
         match env::current_dir() {
             Ok(curr) => return curr,
-            Err(e) => panic!("Could not get current dir"),
+            Err(e) => panic!("Could not get current dir - {}", e),
         }
     }
 }
 
-fn main() {
-
+fn main() -> std::io::Result<()> {
     let path = get_path_string();
 
-    path.read_dir().expect("Could not read directory");
-        .map(|entry| Entry)
-        .for_each(|entry| println!("{:?}", entry));
-    println!("Hello, world!");
+    path.read_dir()
+        .expect("Could not read diran use my_string.into() to create an OsStrinectory")
+        .map(|entry| return dir_entry_to_entry(entry.unwrap()))
+        .for_each(|entry| println!("{}", entry));
+    Ok(())
 }

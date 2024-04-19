@@ -1,7 +1,7 @@
-use std::{fmt::Display, fs::DirEntry};
+use std::{ ffi::OsString, fmt::Display, fs::DirEntry};
 
 pub struct Entry {
-    pub name: String,
+    pub name: OsString,
     pub icon: String,
     pub size: usize,
     pub group: String,
@@ -9,14 +9,14 @@ pub struct Entry {
     pub permissions: String,
 }
 
-fn DirEntryToEntry(dirEntry: DirEntry) -> Entry{
+pub fn dir_entry_to_entry(dir_entry: DirEntry) -> Entry{
     return Entry {
-        name: dirEntry.file_name(),
-        icon: "folder",
-        size: "13",
-        group: "rsacramento",
-        owner: "rsacramento",
-        permissions: "1223"
+        name: dir_entry.file_name(),
+        icon: "folder".to_string(),
+        size: 13,
+        group: "rsacramento".to_string(),
+        owner: "rsacramento".to_string(),
+        permissions: "1223".to_string()
     }
 
 }
@@ -25,7 +25,7 @@ impl Display for Entry {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         return write!(
             f,
-            "{} {} {} {} {} {}",
+            "{} {} {} {} {:?} {}",
             self.permissions,
             self.group,
             self.owner,
