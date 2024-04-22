@@ -21,7 +21,7 @@ fn main() -> std::io::Result<()> {
     let path = get_path_string();
 
     path.read_dir()
-        .expect("Could not read diran use my_string.into() to create an OsStrinectory")
+        .expect("Could not read dir from path")
         .map(|entry| return dir_entry_to_entry(entry.unwrap()))
         .for_each(|entry| println!("{}", entry));
     Ok(())
