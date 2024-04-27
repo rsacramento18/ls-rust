@@ -4,14 +4,32 @@ use std::{
     os::unix::fs::{MetadataExt, PermissionsExt},
 };
 
+use human_bytes::human_bytes;
 use users::{get_group_by_gid, get_user_by_uid};
+use colored::Colorize;
 
 pub struct Entry {
     pub name: String,
-    pub icon: String,
-    pub size: u64,
+    pub extention: String,
+    pub size: String,
     pub group_user: String,
     pub permissions: String,
+}
+
+fn get_extention_icon(dir_entry: &DirEntry) -> String {
+    if let Some(ext) = dir_entry.path().extension() {
+        match ext.to_str().unwrap() {
+            "lock" => return "".to_string(),
+            "toml" => return "".to_string(),
+            _ => return ext.to_str().unwrap().to_string(),
+        }
+    }
+
+    match dir_entry.file_name().to_str().unwrap() {
+        ".gitignore" => return "".to_string(),
+        _ => return "".to_string(),
+
+    }
 }
 
 fn get_icon(fileType: FileType) -> String {
@@ -27,18 +45,18 @@ fn get_icon(fileType: FileType) -> String {
 pub fn dir_entry_to_entry(dir_entry: DirEntry) -> Entry {
     return Entry {
         name: dir_entry.file_name().to_str().unwrap().to_string().into(),
-        icon: get_icon(dir_entry.file_type().expect("Could not get a file type")),
+        extention: get_extention_icon(&dir_entry),
         size: get_entry_size(&dir_entry),
         group_user: get_entry_group_user(&dir_entry),
         permissions: get_entry_permissions(&dir_entry),
     };
 }
 
-fn get_entry_size(dir_entry: &DirEntry) -> u64 {
+fn get_entry_size(dir_entry: &DirEntry) -> String {
     if let Ok(metadata) = dir_entry.metadata() {
-        return metadata.len();
+        return human_bytes(metadata.len() as f64);
     }
-    return 0;
+    return "".to_string();
 }
 
 fn get_entry_group_user(dir_entry: &DirEntry) -> String {
@@ -73,7 +91,7 @@ impl Display for Entry {
         return write!(
             f,
             "{} {} {} {} {}",
-            self.permissions, self.group_user, self.size, self.name, self.icon
+            self.permissions, self.group_user, self.size, self.name, self.extention
         );
     }
 }
