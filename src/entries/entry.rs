@@ -14,6 +14,7 @@ pub struct Entry {
     pub size: String,
     pub group_user: String,
     pub permissions: String,
+    pub file_type: usize,
 }
 
 fn get_extention_icon(dir_entry: &DirEntry) -> String {
@@ -32,13 +33,13 @@ fn get_extention_icon(dir_entry: &DirEntry) -> String {
     }
 }
 
-fn get_icon(fileType: FileType) -> String {
-    if fileType.is_dir() {
-        return "".to_string();
-    } else if fileType.is_file() {
-        return "".to_string();
+fn get_type(file_type: FileType) -> usize {
+    if file_type.is_dir() {
+        return 0;
+    } else if file_type.is_file() {
+        return 1;
     } else {
-        return "󱀶".to_string();
+        return 2;
     }
 }
 
@@ -49,6 +50,7 @@ pub fn dir_entry_to_entry(dir_entry: DirEntry) -> Entry {
         size: get_entry_size(&dir_entry),
         group_user: get_entry_group_user(&dir_entry),
         permissions: get_entry_permissions(&dir_entry),
+        file_type: get_type(dir_entry.file_type().unwrap()),
     };
 }
 
@@ -88,10 +90,16 @@ fn get_entry_permissions(dir_entry: &DirEntry) -> String {
 
 impl Display for Entry {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        return write!(
-            f,
+        let formated = format!(
             "{} {} {} {} {}",
             self.permissions, self.group_user, self.size, self.name, self.extention
         );
+
+        match self.file_type {
+            0 => write!(f, "{}", formated.blue()),
+            1 => write!(f, "{}", formated),
+            2 => write!(f, "{}", formated.green()),
+            _ => write!(f, "{}", formated),
+        }
     }
 }
